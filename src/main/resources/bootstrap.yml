@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: api-gateway
+  #关闭网页tab显示的图标
+  mvc:
+    favicon:
+      enabled: false
+  profiles:
+    active: dev
+
+
+
