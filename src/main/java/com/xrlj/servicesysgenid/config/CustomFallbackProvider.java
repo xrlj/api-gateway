@@ -1,6 +1,6 @@
-package com.xrlj.apigateway.config;
+package com.xrlj.servicesysgenid.config;
 
-import com.xrlj.apigateway.common.Constants;
+import com.xrlj.servicesysgenid.common.Constants;
 import com.xrlj.framework.spring.mvc.api.ApiResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

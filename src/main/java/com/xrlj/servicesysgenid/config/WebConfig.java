@@ -1,4 +1,4 @@
-package com.xrlj.apigateway.config;
+package com.xrlj.servicesysgenid.config;
 
 import com.xrlj.framework.spring.config.web.AbstractWebConfiguration;
 import com.xrlj.framework.spring.config.web.JsonHandlerExceptionResolverOpen;
@@ -6,7 +6,6 @@ import com.xrlj.framework.spring.config.web.JsonViewHttpMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.validation.Validator;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
