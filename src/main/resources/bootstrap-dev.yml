@@ -1,5 +1,3 @@
-server:
-  port: 5555
 spring:
   cloud:
       config: #配置中心
@@ -25,8 +23,9 @@ eureka:
 feign:
   hystrix:
     enabled: true  # 在feign中开启hystrix功能，默认情况下feign不开启hystrix功能
-
-
-
-
+### 日志配置
+logging:
+  file: logs/api-gateway.log
+  level:
+    com.xrlj: debug
 

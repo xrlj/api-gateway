@@ -56,7 +56,7 @@ public class CustomFallbackProvider implements FallbackProvider {
 
             @Override
             public InputStream getBody() throws IOException {
-                ApiResult<String> apiResult = new ApiResult<>();
+                ApiResult apiResult = new ApiResult();
                 apiResult.failure(500,messageSource.getMessage("error.msg.service.unavailable",null,Locale.CHINA));
                 return new ByteArrayInputStream(apiResult.toString().getBytes("UTF-8"));
 //                String msg = String.format("服务%s不可用",route);

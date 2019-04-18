@@ -86,20 +86,20 @@ public class ApiExportFilter extends ZuulFilter {
             InputStream respData = context.getResponseDataStream();
             String respDataStr = (respData == null) ? "{}" : IOUtils.toString(respData,"utf-8");
             log.debug(String.format(">>>>请求服务%s返回：%s",serviceName,respDataStr));
-            ApiResult<Object> apiResult = new ApiResult<>();
+            ApiResult apiResult = new ApiResult();
             if (innerServiceError || serviceStatus != HttpStatus.OK.value()) { //服务异常返回
                 JSONObject jsonObject = JSONObject.parseObject(respDataStr);
                 String message = jsonObject.getString("message");
                 Integer statusCode = jsonObject.getInteger("status");
                 apiResult.setCode(statusCode);
                 apiResult.setSuccess(false);
-                apiResult.setDescription(message);
+                apiResult.setMsg(message);
                 apiResult.setData("");
             } else { //正常返回
                 servletResponse.addHeader("m-error-type","no");
                 apiResult.setSuccess(true);
                 apiResult.setCode(HttpStatus.OK.value());
-                apiResult.setDescription(messageSource.getMessage("success.msg.description",null,Locale.getDefault()));
+                apiResult.setMsg(messageSource.getMessage("success.msg.description",null,Locale.getDefault()));
                 if (respDataStr == null || "".equals(respDataStr)) {
                     apiResult.setData("");
                 } else if (respDataStr.startsWith("{") || respDataStr.startsWith("[")) {
@@ -110,7 +110,7 @@ public class ApiExportFilter extends ZuulFilter {
 
             }
 
-            context.setResponseBody(apiResult.toString());
+            context.setResponseBody(JSON.toJSONString(apiResult));
 
         } catch (Exception e) {
             ReflectionUtils.rethrowRuntimeException(e);

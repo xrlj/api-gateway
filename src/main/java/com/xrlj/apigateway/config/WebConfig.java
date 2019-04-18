@@ -1,14 +1,15 @@
 package com.xrlj.apigateway.config;
 
-import com.xrlj.framework.spring.config.JsonHandlerExceptionResolverOpen;
-import com.xrlj.framework.spring.config.JsonHttpMessageConverter2;
-import com.xrlj.framework.spring.config.JsonViewHttpMessageConverter;
+import com.xrlj.framework.spring.config.web.AbstractWebConfiguration;
+import com.xrlj.framework.spring.config.web.JsonHandlerExceptionResolverOpen;
+import com.xrlj.framework.spring.config.web.JsonViewHttpMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.validation.Validator;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
 import java.util.List;
 
@@ -17,22 +18,16 @@ import java.util.List;
  * 这种方式会屏蔽springboot的@EnableAutoConfiguration中的设置
  */
 @Configuration
-public class WebConfig extends WebMvcConfigurationSupport {
+public class WebConfig extends AbstractWebConfiguration {
 
     @Autowired
-    private JsonViewHttpMessageConverter jsonViewHttpMessageConverter;
+    @Qualifier("jsonViewHttpMessageConverterOpen")
+    private JsonViewHttpMessageConverter jsonViewHttpMessageConverterOpen;
 
-    /**
-     * 配置消息转换规则。
-     *
-     * @param converters
-     */
-    @Override
-    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        //------json与对象转换器
-        converters.add(jsonViewHttpMessageConverter);
-        converters.add(new JsonHttpMessageConverter2());
-    }
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        converters.add(jsonViewHttpMessageConverterOpen);
+//    }
 
     /**
      * 全局验证器
@@ -44,18 +39,15 @@ public class WebConfig extends WebMvcConfigurationSupport {
         return super.getValidator();
     }
 
-    /*@Override
-    protected void addFormatters(FormatterRegistry registry) {
-        registry.addFormatterForFieldAnnotation(new SensitiveFormatAnnotationFormatterFactory(s -> {
-            if ("色情".equals(s)) {
-                return "参数中包含敏感词";
-            }
-            return s;
-        }));
-        super.addFormatters(registry);
-    }*/
-
-
+    /**
+     * 定义拦截器。
+     *
+     * @param registry
+     */
+    @Override
+    protected void addInterceptors(InterceptorRegistry registry) {
+        super.addInterceptors(registry);
+    }
 
     /**
      * 统一异常处理。
