@@ -12,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.MessageSource;
@@ -34,6 +35,7 @@ import java.util.Locale;
 @EnableDiscoveryClient
 @EnableEurekaClient //可注册到服务中心
 @EnableZuulProxy
+@RefreshScope
 public class ApiGatewayApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
