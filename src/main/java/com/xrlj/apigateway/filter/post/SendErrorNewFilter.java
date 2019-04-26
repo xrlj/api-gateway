@@ -1,4 +1,4 @@
-package com.xrlj.servicesysgenid.filter.post;
+package com.xrlj.apigateway.filter.post;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;

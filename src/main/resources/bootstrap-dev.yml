@@ -19,7 +19,7 @@ eureka:
 #    ip-address: //手动设置ip
   client:
     service-url:
-      default-zone: http://172.31.31.31:1111/eureka/
+      defaultZone: http://172.31.31.31:1111/eureka/
 feign:
   hystrix:
     enabled: true  # 在feign中开启hystrix功能，默认情况下feign不开启hystrix功能

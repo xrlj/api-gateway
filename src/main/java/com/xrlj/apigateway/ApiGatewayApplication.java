@@ -1,7 +1,7 @@
-package com.xrlj.servicesysgenid;
+package com.xrlj.apigateway;
 
 import com.netflix.zuul.FilterProcessor;
-import com.xrlj.servicesysgenid.config.CustomFilterProcessor;
+import com.xrlj.apigateway.config.CustomFilterProcessor;
 import com.xrlj.framework.spring.config.SchedulingConfig;
 import com.xrlj.framework.spring.config.ds.myself.DataSourceConfig;
 import com.xrlj.framework.spring.config.ds.myself.JdbcTemplateConfig;
@@ -31,7 +31,7 @@ import java.util.Locale;
  * 待解决问题：加了安全验证，Authorization密码错误，返回空白。不添加认证，没按设定返回。
  */
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.xrlj.servicesysgenid", "com.xrlj.framework.spring"},excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {SchedulingConfig.class, DataSourceConfig.class, JdbcTemplateConfig.class}))
+@ComponentScan(basePackages = {"com.xrlj.apigateway", "com.xrlj.framework.spring"},excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {SchedulingConfig.class, DataSourceConfig.class, JdbcTemplateConfig.class}))
 @EnableDiscoveryClient
 @EnableEurekaClient //可注册到服务中心
 @EnableZuulProxy
