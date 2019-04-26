@@ -28,5 +28,3 @@ logging:
   file: logs/api-gateway.log
   level:
     com.xrlj: debug
-server:
-  port: 5555
