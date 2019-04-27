@@ -51,17 +51,18 @@ public class ApiGatewayApplication implements CommandLineRunner {
     @RequestMapping("/api")
     class ApiController {
 
-        @Value("${api.password}")
-        private String pwd;
-
         @Autowired
         private MessageSource messageSource;
 
         @GetMapping("/error")
         public ApiResult error(HttpServletResponse response) {
-            ApiResult apiResult = new ApiResult();
-            apiResult.failure(500,messageSource.getMessage("error.msg.system",null,Locale.getDefault()));
-            apiResult.setMsg(pwd);
+            int status = response.getStatus();
+            ApiResult apiResult;
+            if (status == 404) {
+               apiResult = ApiResult.error(404,messageSource.getMessage("error.msg.no.path",null,Locale.getDefault()));
+            } else {
+                apiResult = ApiResult.error(500,messageSource.getMessage("error.msg.system",null,Locale.getDefault()));
+            }
             return apiResult;
         }
 
