@@ -1,4 +1,4 @@
-package com.xrlj.apigateway;
+package com.xrlj.servicesysgenid;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
