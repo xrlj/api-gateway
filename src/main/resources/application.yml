@@ -1,0 +1,23 @@
+spring:
+  devtools:
+    livereload:
+      enabled: false
+    remote:
+      restart:
+        enabled: false
+  cloud:
+    bus:
+      enabled: true
+      trace:
+        enabled: true
+  session:
+    store-type: redis
+    timeout: 18000 #过期时间，5分钟
+    redis:
+      flush-mode: on_save
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#debug: true #调试模式，将会看到更多的日志信息。默认关闭

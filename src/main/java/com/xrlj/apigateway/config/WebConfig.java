@@ -1,4 +1,4 @@
-package com.xrlj.servicesysgenid.config;
+package com.xrlj.apigateway.config;
 
 import com.xrlj.framework.spring.config.web.AbstractWebConfiguration;
 import com.xrlj.framework.spring.config.web.JsonHandlerExceptionResolverOpen;

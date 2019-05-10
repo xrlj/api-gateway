@@ -1,4 +1,4 @@
-package com.xrlj.servicesysgenid.filter.error;
+package com.xrlj.apigateway.filter.error;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;

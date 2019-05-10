@@ -1,4 +1,4 @@
-package com.xrlj.servicesysgenid.config;
+package com.xrlj.apigateway.config;
 
 import com.netflix.zuul.FilterProcessor;
 import com.netflix.zuul.ZuulFilter;

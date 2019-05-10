@@ -1,6 +1,6 @@
-package com.xrlj.servicesysgenid.config;
+package com.xrlj.apigateway.config;
 
-import com.xrlj.servicesysgenid.common.Constants;
+import com.xrlj.apigateway.common.Constants;
 import com.xrlj.framework.spring.mvc.api.ApiResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class CustomFallbackProvider implements FallbackProvider {
             @Override
             public InputStream getBody() throws IOException {
                 ApiResult apiResult = new ApiResult();
-                apiResult.failure(500,messageSource.getMessage("error.msg.service.unavailable",null,Locale.CHINA));
+                apiResult.failure(500,messageSource.getMessage("error.msg.service.unavailable",null,Locale.getDefault()));
                 return new ByteArrayInputStream(apiResult.toString().getBytes("UTF-8"));
 //                String msg = String.format("服务%s不可用",route);
 //                return new ByteArrayInputStream(msg.getBytes("UTF-8"));
