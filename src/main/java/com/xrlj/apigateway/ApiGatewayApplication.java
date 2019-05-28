@@ -1,14 +1,9 @@
 package com.xrlj.apigateway;
 
 import com.netflix.zuul.FilterProcessor;
-import com.xrlj.framework.spring.config.ds.myself.JooqConfig;
 import com.xrlj.apigateway.config.CustomFilterProcessor;
-import com.xrlj.framework.spring.config.SchedulingConfig;
-import com.xrlj.framework.spring.config.ds.myself.DataSourceConfig;
-import com.xrlj.framework.spring.config.ds.myself.JdbcTemplateConfig;
 import com.xrlj.framework.spring.mvc.api.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +13,6 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +26,7 @@ import java.util.Locale;
  * 待解决问题：加了安全验证，Authorization密码错误，返回空白。不添加认证，没按设定返回。
  */
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.xrlj.apigateway", "com.xrlj.framework.spring"},excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {SchedulingConfig.class, DataSourceConfig.class, JdbcTemplateConfig.class, JooqConfig.class}))
+@ComponentScan(basePackages = {"com.xrlj.apigateway", "com.xrlj.framework"})
 @EnableDiscoveryClient
 @EnableEurekaClient //可注册到服务中心
 @EnableZuulProxy

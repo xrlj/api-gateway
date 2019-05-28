@@ -25,6 +25,11 @@
             <artifactId>xrlj-framework</artifactId>
             <version>0.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.xrlj</groupId>
+            <artifactId>xrlj-configuration-web</artifactId>
+            <version>0.0.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
