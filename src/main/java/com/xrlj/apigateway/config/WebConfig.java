@@ -25,9 +25,6 @@ public class WebConfig extends WebMvcConfigurationSupport {
     @Qualifier("jsonViewHttpMessageConverterOpen")
     private JsonViewHttpMessageConverter jsonViewHttpMessageConverterOpen;
 
-    @Autowired
-    private JsonHandlerExceptionResolverOpen jsonHandlerExceptionResolverOpen;
-
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
        converters.add(jsonViewHttpMessageConverterOpen);
@@ -39,8 +36,6 @@ public class WebConfig extends WebMvcConfigurationSupport {
      */
     @Override
     protected void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-        exceptionResolvers.add(jsonHandlerExceptionResolverOpen);
+        exceptionResolvers.add(new JsonHandlerExceptionResolverOpen());
     }
-
-
 }

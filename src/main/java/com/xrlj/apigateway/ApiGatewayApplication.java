@@ -57,7 +57,6 @@ public class ApiGatewayApplication implements CommandLineRunner {
 
         @GetMapping("/error")
         public ApiResult error(HttpServletResponse response) {
-            int a = 10/0;
             int status = response.getStatus();
             ApiResult apiResult;
             if (status == 404) {
