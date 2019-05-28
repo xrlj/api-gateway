@@ -6,9 +6,11 @@ import com.xrlj.framework.spring.config.web.JsonViewHttpMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.validation.Validator;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.util.List;
 
@@ -17,35 +19,18 @@ import java.util.List;
  * 这种方式会屏蔽springboot的@EnableAutoConfiguration中的设置
  */
 @Configuration
-public class WebConfig extends AbstractWebConfiguration {
+public class WebConfig extends WebMvcConfigurationSupport {
 
     @Autowired
     @Qualifier("jsonViewHttpMessageConverterOpen")
     private JsonViewHttpMessageConverter jsonViewHttpMessageConverterOpen;
 
-//    @Override
-//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        converters.add(jsonViewHttpMessageConverterOpen);
-//    }
+    @Autowired
+    private JsonHandlerExceptionResolverOpen jsonHandlerExceptionResolverOpen;
 
-    /**
-     * 全局验证器
-     *
-     * @return
-     */
     @Override
-    protected Validator getValidator() {
-        return super.getValidator();
-    }
-
-    /**
-     * 定义拦截器。
-     *
-     * @param registry
-     */
-    @Override
-    protected void addInterceptors(InterceptorRegistry registry) {
-        super.addInterceptors(registry);
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+       converters.add(jsonViewHttpMessageConverterOpen);
     }
 
     /**
@@ -54,7 +39,7 @@ public class WebConfig extends AbstractWebConfiguration {
      */
     @Override
     protected void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-        exceptionResolvers.add(new JsonHandlerExceptionResolverOpen());
+        exceptionResolvers.add(jsonHandlerExceptionResolverOpen);
     }
 
 

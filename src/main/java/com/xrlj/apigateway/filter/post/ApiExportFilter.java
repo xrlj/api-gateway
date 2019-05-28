@@ -6,6 +6,7 @@ import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.xrlj.apigateway.common.Constants;
 import com.xrlj.framework.spring.mvc.api.ApiResult;
+import com.xrlj.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,16 @@ import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.netflix.util.Pair;
 
 /**
  * 没有异常。处理服务返回的结果，以更加友好格式返回客户端。
+ *
  */
 @Slf4j
 @Component
@@ -50,6 +54,11 @@ public class ApiExportFilter extends ZuulFilter {
         return e_b && status != 401;
     }
 
+    /**
+     * 处理服务返回结果。
+     * @see org.springframework.cloud.netflix.zuul.filters.post.SendResponseFilter
+     * @return
+     */
     @Override
     public Object run() {
         try {
@@ -104,8 +113,18 @@ public class ApiExportFilter extends ZuulFilter {
                     apiResult.setData("");
                 } else if (respDataStr.startsWith("{") || respDataStr.startsWith("[")) {
                     apiResult.setData(JSON.parse(respDataStr));
-                } else {
-                    apiResult.setData(respDataStr);
+                } else { //基本类型处理。
+                    if (StringUtil.isNumeric(respDataStr)) {
+                        apiResult.setData(Integer.valueOf(respDataStr));
+                    } else if (StringUtil.isDouble(respDataStr)) {
+                        apiResult.setData(Double.valueOf(respDataStr));
+                    } else if (StringUtil.equals(respDataStr,"true")) {
+                        apiResult.setData(true);
+                    } else if (StringUtil.equals(respDataStr,"false")) {
+                        apiResult.setData(false);
+                    } else { //字符串
+                        apiResult.setData(respDataStr);
+                    }
                 }
 
             }

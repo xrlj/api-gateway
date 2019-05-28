@@ -1,5 +1,6 @@
 package com.xrlj.apigateway.config;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xrlj.apigateway.common.Constants;
 import com.xrlj.framework.spring.mvc.api.ApiResult;
 import org.slf4j.Logger;
@@ -58,9 +59,8 @@ public class CustomFallbackProvider implements FallbackProvider {
             public InputStream getBody() throws IOException {
                 ApiResult apiResult = new ApiResult();
                 apiResult.failure(500,messageSource.getMessage("error.msg.service.unavailable",null,Locale.getDefault()));
-                return new ByteArrayInputStream(apiResult.toString().getBytes("UTF-8"));
-//                String msg = String.format("服务%s不可用",route);
-//                return new ByteArrayInputStream(msg.getBytes("UTF-8"));
+                String str = JSONObject.toJSONString(apiResult);
+                return new ByteArrayInputStream(str.getBytes("UTF-8"));
             }
 
             @Override
