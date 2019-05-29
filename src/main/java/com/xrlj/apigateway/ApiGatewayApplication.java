@@ -2,7 +2,9 @@ package com.xrlj.apigateway;
 
 import com.netflix.zuul.FilterProcessor;
 import com.xrlj.apigateway.config.CustomFilterProcessor;
+import com.xrlj.framework.base.BaseSpringbootApplication;
 import com.xrlj.framework.spring.mvc.api.ApiResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -25,21 +27,18 @@ import java.util.Locale;
  *
  * 待解决问题：加了安全验证，Authorization密码错误，返回空白。不添加认证，没按设定返回。
  */
+@Slf4j
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.xrlj.apigateway", "com.xrlj.framework"})
 @EnableDiscoveryClient
 @EnableEurekaClient //可注册到服务中心
 @EnableZuulProxy
 @RefreshScope
-public class ApiGatewayApplication implements CommandLineRunner {
+public class ApiGatewayApplication extends BaseSpringbootApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ApiGatewayApplication.class, args);
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        FilterProcessor.setProcessor(new CustomFilterProcessor());
+        log.info(">>>>>服务启动成功：{}",args);
     }
 
     @RestController
