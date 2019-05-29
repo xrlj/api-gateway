@@ -123,6 +123,7 @@ public class ApiExportFilter extends ZuulFilter {
                     } else if (StringUtil.equals(respDataStr,"false")) {
                         apiResult.setData(false);
                     } else { //字符串
+                        respDataStr = !"".equals(respDataStr) ? respDataStr.substring(1, respDataStr.length() -1) : "";
                         apiResult.setData(respDataStr);
                     }
                 }
