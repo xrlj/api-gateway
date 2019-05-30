@@ -4,9 +4,12 @@ import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,9 +17,12 @@ import javax.servlet.http.HttpServletResponse;
  * 检查请求中是否有accessToken参数，没有不可访问。
  */
 @Component
+@RefreshScope
 public class AccessTokenFilter extends ZuulFilter {
 
     private static Logger logger = LoggerFactory.getLogger(AccessTokenFilter.class);
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     /**
      * 四种请求类型。
@@ -53,11 +59,14 @@ public class AccessTokenFilter extends ZuulFilter {
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
-//        int a = 9/0;
 
         logger.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
 
-        /*Object accessToken = request.getParameter("token");
+        String accessToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (accessToken == null) { //请求的是登录接口，直接放行
+
+        }
+
         if(accessToken == null) {
             logger.warn("access token is empty");
             ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
@@ -66,13 +75,13 @@ public class AccessTokenFilter extends ZuulFilter {
 
             forward(request,ctx.getResponse());
         }
-        logger.info("access token ok");*/
+        logger.info("access token ok");
 
         return null;
     }
 
     private void forward(HttpServletRequest request,HttpServletResponse response){
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/api/errorToken");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/api/nonToken");
         if (null != dispatcher) {
             if (!response.isCommitted()) {
                 try {
@@ -83,4 +92,5 @@ public class AccessTokenFilter extends ZuulFilter {
             }
         }
     }
+
 }

@@ -17,6 +17,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -60,8 +61,13 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
             return apiResult;
         }
 
-        @GetMapping("/errorToken")
-        public ApiResult errorToken(HttpServletResponse response) {
+        /**
+         * 还没登录认证，缺少token。
+         * @param response
+         * @return
+         */
+        @RequestMapping(value = "/nonToken", method = {RequestMethod.GET, RequestMethod.POST})
+        public ApiResult nonToken(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
             apiResult.failure(401,"缺少api验证参数token");
             return apiResult;
