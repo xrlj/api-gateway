@@ -21,3 +21,6 @@ management:
       exposure:
         include: "*"
 #debug: true #调试模式，将会看到更多的日志信息。默认关闭
+zuul:
+  add-host-header: true #重定向问题
+  sensitive-headers: Cookie,Set-Cookie,Authorization
