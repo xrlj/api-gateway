@@ -1,12 +1,9 @@
 package com.xrlj.apigateway;
 
-import com.netflix.zuul.FilterProcessor;
-import com.xrlj.apigateway.config.CustomFilterProcessor;
 import com.xrlj.framework.base.BaseSpringbootApplication;
 import com.xrlj.framework.spring.mvc.api.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -70,6 +67,20 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
         public ApiResult nonToken(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
             apiResult.failure(401,"缺少api验证参数token");
+            return apiResult;
+        }
+
+        @RequestMapping(value = "/expToken", method = {RequestMethod.GET, RequestMethod.POST})
+        public ApiResult expToken(HttpServletResponse response) {
+            ApiResult apiResult = new ApiResult();
+            apiResult.failure(410,"token已过期");
+            return apiResult;
+        }
+
+        @RequestMapping(value = "/errorToken", method = {RequestMethod.GET, RequestMethod.POST})
+        public ApiResult errorToken(HttpServletResponse response) {
+            ApiResult apiResult = new ApiResult();
+            apiResult.failure(411,"无效token");
             return apiResult;
         }
     }
