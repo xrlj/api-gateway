@@ -50,8 +50,8 @@ public class ApiExportFilter extends ZuulFilter {
     public boolean shouldFilter() {
         RequestContext ctx = RequestContext.getCurrentContext();
         boolean e_b = !ctx.containsKey("error.status_code"); //api-gateway服务没有发生内部代码异常执行
-        int status = ctx.getResponse().getStatus();
-        return e_b && status != 401;
+        boolean sendZuulResponse = ctx.getBoolean("sendZuulResponse", true);  //有在AccessTokenFilter设置
+        return e_b  && sendZuulResponse;
     }
 
     /**
@@ -115,7 +115,7 @@ public class ApiExportFilter extends ZuulFilter {
                     apiResult.setData(JSON.parse(respDataStr));
                 } else { //基本类型处理。
                     if (StringUtil.isNumeric(respDataStr)) {
-                        apiResult.setData(Integer.valueOf(respDataStr));
+                        apiResult.setData(Long.valueOf(respDataStr));
                     } else if (StringUtil.isDouble(respDataStr)) {
                         apiResult.setData(Double.valueOf(respDataStr));
                     } else if (StringUtil.equals(respDataStr,"true")) {
@@ -133,6 +133,7 @@ public class ApiExportFilter extends ZuulFilter {
             context.setResponseBody(JSON.toJSONString(apiResult));
 
         } catch (Exception e) {
+            log.info("请求服务内容后解析错误", e);
             ReflectionUtils.rethrowRuntimeException(e);
         }
         return null;

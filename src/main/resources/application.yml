@@ -23,4 +23,4 @@ management:
 #debug: true #调试模式，将会看到更多的日志信息。默认关闭
 zuul:
   add-host-header: true #重定向问题
-  sensitive-headers: Cookie,Set-Cookie,Authorization
+  sensitive-headers: "*" #保留所有头信息传递，解决多个服务在转发中sessionId不一致的问题，到了服务层，缺少头信息的问题。

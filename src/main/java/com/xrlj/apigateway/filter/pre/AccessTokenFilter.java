@@ -82,8 +82,6 @@ public class AccessTokenFilter extends ZuulFilter {
             if (authorization == null) {
                 logger.warn("access token is empty");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
-                ctx.setResponseStatusCode(401);//设置了其返回的错误码
-                ctx.getResponse().setContentType("application/json;charset=UTF-8");
                 forward(request, ctx.getResponse(), "/api/nonToken");
             }
 
@@ -95,9 +93,11 @@ public class AccessTokenFilter extends ZuulFilter {
                 return null;
             } else if (verifyTokenResult == JwtUtils.VerifyTokenResult.TOKEN_EXPIRED_ERROR) {
                 logger.info("access token expired");
+                ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/expToken");
             } else {
                 logger.info("access token invalid error");
+                ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/errorToken");
             }
         } catch (Exception e) {
