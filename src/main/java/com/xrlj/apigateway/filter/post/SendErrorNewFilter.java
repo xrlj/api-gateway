@@ -3,6 +3,7 @@ package com.xrlj.apigateway.filter.post;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
+import com.xrlj.apigateway.filter.BaseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  * <li>在pre、route、post抛出异常都会被error处理，处理后并交给post处理，但是post抛出的异常，error处理后，不再交给post处理</li>
  */
 @Component
-public class SendErrorNewFilter extends ZuulFilter {
+public class SendErrorNewFilter extends BaseFilter {
 
     private static Logger logger = LoggerFactory.getLogger(SendErrorNewFilter.class);
 
@@ -68,13 +69,7 @@ public class SendErrorNewFilter extends ZuulFilter {
             response.setContentType("application/json;charset=UTF-8");
             response.addHeader("m-error-type", "zuul-filter-not-post");
             HttpServletRequest request = ctx.getRequest();
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/api/error");
-            if (dispatcher != null) {
-                if (!response.isCommitted()) {
-                    dispatcher.forward(request, response);
-                }
-            }
-
+            forward(request, response, "/api/error");
         } catch (Exception e) {
             ReflectionUtils.rethrowRuntimeException(e);
         }

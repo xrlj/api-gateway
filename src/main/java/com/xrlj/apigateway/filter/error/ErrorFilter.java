@@ -1,7 +1,7 @@
 package com.xrlj.apigateway.filter.error;
 
-import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import com.xrlj.apigateway.filter.BaseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  * api网关本身系统异常都会进入run方法。
  */
 @Component
-public class ErrorFilter extends ZuulFilter {
+public class ErrorFilter extends BaseFilter {
 
     private static Logger logger = LoggerFactory.getLogger(ErrorFilter.class);
 

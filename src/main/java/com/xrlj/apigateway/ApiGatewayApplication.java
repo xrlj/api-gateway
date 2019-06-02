@@ -22,7 +22,7 @@ import java.util.Locale;
 
 /**
  * https://www.jianshu.com/p/ff863d532767
- *
+ * <p>
  * 待解决问题：加了安全验证，Authorization密码错误，返回空白。不添加认证，没按设定返回。
  */
 @Slf4j
@@ -36,7 +36,7 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ApiGatewayApplication.class, args);
-        log.info(">>>>>服务启动成功：{}",args);
+        log.info(">>>>>服务启动成功：{}", args);
     }
 
     @RestController
@@ -46,41 +46,42 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
         @Autowired
         private MessageSource messageSource;
 
-        @GetMapping("/error")
+        @RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.POST})
         public ApiResult error(HttpServletResponse response) {
             int status = response.getStatus();
             ApiResult apiResult;
             if (status == 404) {
-               apiResult = ApiResult.error(404,messageSource.getMessage("error.msg.no.path",null,Locale.getDefault()));
+                apiResult = ApiResult.error(404, messageSource.getMessage("error.msg.no.path", null, Locale.getDefault()));
             } else {
-                apiResult = ApiResult.error(500,messageSource.getMessage("error.msg.system",null,Locale.getDefault()));
+                apiResult = ApiResult.error(500, messageSource.getMessage("error.msg.system", null, Locale.getDefault()));
             }
             return apiResult;
         }
 
         /**
          * 还没登录认证，缺少token。
+         *
          * @param response
          * @return
          */
         @RequestMapping(value = "/nonToken", method = {RequestMethod.GET, RequestMethod.POST})
         public ApiResult nonToken(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
-            apiResult.failure(401,"缺少api验证参数token");
+            apiResult.failure(401, "缺少api验证参数token");
             return apiResult;
         }
 
         @RequestMapping(value = "/expToken", method = {RequestMethod.GET, RequestMethod.POST})
         public ApiResult expToken(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
-            apiResult.failure(410,"token已过期");
+            apiResult.failure(410, "token已过期");
             return apiResult;
         }
 
         @RequestMapping(value = "/errorToken", method = {RequestMethod.GET, RequestMethod.POST})
         public ApiResult errorToken(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
-            apiResult.failure(411,"无效token");
+            apiResult.failure(411, "无效token");
             return apiResult;
         }
     }

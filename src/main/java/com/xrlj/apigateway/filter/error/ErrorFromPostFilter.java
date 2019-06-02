@@ -9,8 +9,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * 仅处理来自post阶段抛出的异常。
@@ -70,8 +72,6 @@ public class ErrorFromPostFilter extends SendErrorFilter {
                 forward(request,response);
             } catch (Exception e) {
                 logger.error("api内部异常：",e.getMessage());
-                forward(request,response);
-
                 ReflectionUtils.rethrowRuntimeException(e);
             }
         }
@@ -84,17 +84,13 @@ public class ErrorFromPostFilter extends SendErrorFilter {
      * @param request
      * @param response
      */
-    private void forward(HttpServletRequest request,HttpServletResponse response){
+    private void forward(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.addHeader("m-error-type", "zuul-filter-post");
         RequestDispatcher dispatcher = request.getRequestDispatcher("/api/error");
         if (dispatcher != null) {
             if (!response.isCommitted()) {
-                try {
-                    dispatcher.forward(request, response);
-                } catch (Exception e) {
-                    logger.error("重定向异常，api返回空白：",e.getMessage());
-                }
+                dispatcher.forward(request, response);
             }
         }
     }

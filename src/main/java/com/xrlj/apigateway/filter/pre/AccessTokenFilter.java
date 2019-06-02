@@ -1,7 +1,7 @@
 package com.xrlj.apigateway.filter.pre;
 
-import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import com.xrlj.apigateway.filter.BaseFilter;
 import com.xrlj.utils.authenticate.JwtUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -9,10 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
 
 /**
@@ -20,7 +19,7 @@ import java.net.URL;
  */
 @Component
 @RefreshScope
-public class AccessTokenFilter extends ZuulFilter {
+public class AccessTokenFilter extends BaseFilter {
 
     private static Logger logger = LoggerFactory.getLogger(AccessTokenFilter.class);
 
@@ -65,10 +64,9 @@ public class AccessTokenFilter extends ZuulFilter {
 
     @Override
     public Object run() {
+        RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletRequest request = ctx.getRequest();
         try {
-            RequestContext ctx = RequestContext.getCurrentContext();
-            HttpServletRequest request = ctx.getRequest();
-
             String urlStr = request.getRequestURL().toString();
             logger.info("{} request to {}", request.getMethod(), urlStr);
 
@@ -102,22 +100,9 @@ public class AccessTokenFilter extends ZuulFilter {
             }
         } catch (Exception e) {
             logger.error("token处理异常", e);
+            ReflectionUtils.rethrowRuntimeException(e);
         }
 
         return null;
     }
-
-    private void forward(HttpServletRequest request, HttpServletResponse response, String paht) {
-        RequestDispatcher dispatcher = request.getRequestDispatcher(paht);
-        if (null != dispatcher) {
-            if (!response.isCommitted()) {
-                try {
-                    dispatcher.forward(request, response);
-                } catch (Exception e) {
-                    logger.error(e.getMessage());
-                }
-            }
-        }
-    }
-
 }
