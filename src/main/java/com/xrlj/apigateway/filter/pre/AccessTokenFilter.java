@@ -2,10 +2,13 @@ package com.xrlj.apigateway.filter.pre;
 
 import com.netflix.zuul.context.RequestContext;
 import com.xrlj.apigateway.filter.BaseFilter;
+import com.xrlj.framework.dao.RedisDao;
+import com.xrlj.utils.StringUtil;
 import com.xrlj.utils.authenticate.JwtUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
@@ -25,6 +28,9 @@ public class AccessTokenFilter extends BaseFilter {
 
     @Value("${jwt.sign.secret}")
     private String jwtSecret;
+
+    @Autowired
+    private RedisDao redisDao;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -81,6 +87,15 @@ public class AccessTokenFilter extends BaseFilter {
                 logger.warn("access token is empty");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/nonToken");
+                return null;
+            }
+
+            String redisJwt = (String) redisDao.get("my:jwt");
+            if (StringUtil.isEmpty(redisJwt)) {
+                logger.warn("access token is empty");
+                ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
+                forward(request, ctx.getResponse(), "/api/tokenMiss");
+                return null;
             }
 
             String token = StringUtils.removeStart(authorization, "Bearer ");
