@@ -79,7 +79,8 @@ public class AccessTokenFilter extends BaseFilter {
             URL url = new URL(urlStr);
             String requestPath = url.getPath();
             String authorization = request.getHeader(AUTHORIZATION_HEADER);
-            if (authorization == null && "/usercentral/user/login".equals(requestPath)) { //请求的是登录接口，直接放行
+            boolean goB = "/usercentral/user/login".equals(requestPath) || "/usercentral/user/save".equals(requestPath);
+            if (authorization == null && goB) { //请求的是登录接口，直接放行
                 return null;
             }
 
