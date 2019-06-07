@@ -79,7 +79,7 @@ public class AccessTokenFilter extends BaseFilter {
             URL url = new URL(urlStr);
             String requestPath = url.getPath();
             String authorization = request.getHeader(AUTHORIZATION_HEADER);
-            boolean goB = "/usercentral/user/login".equals(requestPath) || "/usercentral/user/save".equals(requestPath);
+            boolean goB = "/usercentral/user/login".equals(requestPath) || "/usercentral/user/register".equals(requestPath);
             if (authorization == null && goB) { //请求的是登录接口，直接放行
                 return null;
             }
@@ -91,7 +91,10 @@ public class AccessTokenFilter extends BaseFilter {
                 return null;
             }
 
-            String redisJwt = (String) redisDao.get("my:jwt");
+            String token = StringUtils.removeStart(authorization, "Bearer ");
+            String username = JwtUtils.getPubClaimValue(token, "username", String.class);
+
+            String redisJwt = (String) redisDao.get("my:jwt:".concat(username));
             if (StringUtil.isEmpty(redisJwt)) {
                 logger.warn("access token is empty");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
@@ -99,7 +102,6 @@ public class AccessTokenFilter extends BaseFilter {
                 return null;
             }
 
-            String token = StringUtils.removeStart(authorization, "Bearer ");
             //校验token
             JwtUtils.VerifyTokenResult verifyTokenResult = JwtUtils.verifyToken(jwtSecret, token);
             if (verifyTokenResult.equals(JwtUtils.VerifyTokenResult.VERIFY_OK)) { //成功
