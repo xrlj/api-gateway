@@ -10,7 +10,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "access-token-filter")
 public class DirectPath {
 
-    private List<String> directPath = new ArrayList<String>();
+    private List<String> directPath = new ArrayList<>();
 
     public List<String> getDirectPath() {
         return directPath;

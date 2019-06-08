@@ -1,6 +1,7 @@
 package com.xrlj.apigateway.filter.pre;
 
 import com.netflix.zuul.context.RequestContext;
+import com.xrlj.apigateway.config.DirectPath;
 import com.xrlj.apigateway.filter.BaseFilter;
 import com.xrlj.framework.dao.RedisDao;
 import com.xrlj.utils.StringUtil;
@@ -16,6 +17,7 @@ import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
+import java.util.List;
 
 /**
  * 检查请求中是否有accessToken参数，没有不可访问。
@@ -31,6 +33,9 @@ public class AccessTokenFilter extends BaseFilter {
 
     @Autowired
     private RedisDao redisDao;
+
+    @Autowired
+    private DirectPath directPath;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -79,8 +84,8 @@ public class AccessTokenFilter extends BaseFilter {
             URL url = new URL(urlStr);
             String requestPath = url.getPath();
             String authorization = request.getHeader(AUTHORIZATION_HEADER);
-            boolean goB = "/usercentral/user/login".equals(requestPath) || "/usercentral/user/register".equals(requestPath);
-            if (authorization == null && goB) { //请求的是登录接口，直接放行
+            List<String> directPaths = directPath.getDirectPath();
+            if (authorization == null && directPaths.contains(requestPath)) { //请求的是登录接口，直接放行
                 return null;
             }
 
