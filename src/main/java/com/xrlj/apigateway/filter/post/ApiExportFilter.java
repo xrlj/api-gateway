@@ -15,7 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +29,8 @@ import java.util.Map;
 import com.netflix.util.Pair;
 
 /**
- * 没有异常。处理服务返回的结果，以更加友好格式返回客户端。
+ * 没有异常。处理服务返回的结果，以更加友好格式返回客户端。<br>
+ *     内部服务正常返回，返回正常的结果或者异常的结果。
  *
  */
 @Slf4j
@@ -64,6 +69,8 @@ public class ApiExportFilter extends ZuulFilter {
         try {
             RequestContext context = RequestContext.getCurrentContext();
             HttpServletResponse servletResponse = context.getResponse();
+            HttpServletRequest servletRequest = context.getRequest();
+
             //设置响应内容类型
             servletResponse.setHeader("Content-Type","application/json; charset=utf-8");
             int serviceStatus = servletResponse.getStatus(); //实际服务请求状态
@@ -97,6 +104,11 @@ public class ApiExportFilter extends ZuulFilter {
             log.debug(String.format(">>>>请求服务%s返回：%s",serviceName,respDataStr));
             ApiResult apiResult = new ApiResult();
             if (innerServiceError || serviceStatus != HttpStatus.OK.value()) { //服务异常返回
+                if (404 == serviceStatus) {
+                    forward(servletRequest, servletResponse);
+                    return null;
+                }
+
                 JSONObject jsonObject = JSONObject.parseObject(respDataStr);
                 String message = jsonObject.getString("message");
                 Integer statusCode = jsonObject.getInteger("status");
@@ -139,5 +151,15 @@ public class ApiExportFilter extends ZuulFilter {
         return null;
     }
 
+    private void forward(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("m-error-type", "inner-service-path");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/api/error");
+        if (dispatcher != null) {
+            if (!response.isCommitted()) {
+                dispatcher.forward(request, response);
+            }
+        }
+    }
 
 }
