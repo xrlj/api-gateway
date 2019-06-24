@@ -70,14 +70,10 @@ public class AccessTokenFilter extends BaseFilter {
      */
     @Override
     public boolean shouldFilter() {
-        return true;
-    }
-
-    @Override
-    public Object run() {
-        RequestContext ctx = RequestContext.getCurrentContext();
-        HttpServletRequest request = ctx.getRequest();
         try {
+            RequestContext ctx = RequestContext.getCurrentContext();
+            HttpServletRequest request = ctx.getRequest();
+
             String urlStr = request.getRequestURL().toString();
             logger.info("{} request to {}", request.getMethod(), urlStr);
 
@@ -85,17 +81,31 @@ public class AccessTokenFilter extends BaseFilter {
             String requestPath = url.getPath();
             String authorization = request.getHeader(AUTHORIZATION_HEADER);
             List<String> directPaths = directPath.getDirectPath();
-            if (authorization == null && directPaths.contains(requestPath)) { //请求的是登录接口，直接放行
-                return null;
+            if (authorization == null && directPaths.contains(requestPath)) { //直接放行
+                return false;
             }
 
             if (authorization == null) {
                 logger.warn("access token is empty");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/nonToken");
-                return null;
+                return false;
             }
 
+            return true;
+        } catch (Exception e) {
+            logger.error("token过滤处理异常", e);
+            return false;
+        }
+
+    }
+
+    @Override
+    public Object run() {
+        RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletRequest request = ctx.getRequest();
+        try {
+            String authorization = request.getHeader(AUTHORIZATION_HEADER);
             String token = StringUtils.removeStart(authorization, "Bearer ");
             String username = JwtUtils.getPubClaimValue(token, "username", String.class);
 
