@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * https://www.jianshu.com/p/ff863d532767
@@ -47,6 +50,15 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
 
         @Autowired
         private MessageSource messageSource;
+
+        /*@RequestMapping(value = "/test", method = {RequestMethod.GET, RequestMethod.POST})
+        public Object test(HttpServletResponse response) {
+            Map map = new HashMap();
+            map.put("a","aaa");
+            map.put(1,"bbb");
+            map.put("dd",333);
+            return map;
+        }*/
 
         @RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.POST})
         public ApiResult error(HttpServletResponse response) {

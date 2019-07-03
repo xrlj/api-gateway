@@ -5,4 +5,4 @@ spring:
     favicon:
       enabled: true
   profiles:
-    active: dev
+    active: test
