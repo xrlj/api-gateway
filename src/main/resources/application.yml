@@ -10,11 +10,6 @@ spring:
       enabled: true
       trace:
         enabled: true
-  session:
-    store-type: redis
-    timeout: 18000 #过期时间，5分钟
-    redis:
-      flush-mode: on_save
 management:
   endpoints:
     web:
