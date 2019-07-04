@@ -2,6 +2,7 @@ package com.xrlj.apigateway.filter.post;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.netflix.util.Pair;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.xrlj.apigateway.common.Constants;
@@ -21,12 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
-import com.netflix.util.Pair;
 
 /**
  * 没有异常。处理服务返回的结果，以更加友好格式返回客户端。<br>
