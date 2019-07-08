@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.xrlj</groupId>
         <artifactId>xrlj-parent</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.1-SNAPSHOT</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.xrlj</groupId>
@@ -27,7 +27,6 @@
         <dependency>
             <groupId>com.xrlj</groupId>
             <artifactId>xrlj-configuration-web</artifactId>
-            <version>0.0.1</version>
         </dependency>
 
         <dependency>
