@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>com.xrlj</groupId>
-            <artifactId>xrlj-framework</artifactId>
+            <artifactId>xrlj-infrastructure</artifactId>
         </dependency>
         <dependency>
             <groupId>com.xrlj</groupId>

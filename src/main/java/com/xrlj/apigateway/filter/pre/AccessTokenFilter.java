@@ -4,6 +4,7 @@ import com.netflix.zuul.context.RequestContext;
 import com.xrlj.apigateway.config.DirectPath;
 import com.xrlj.apigateway.filter.BaseFilter;
 import com.xrlj.framework.dao.RedisDao;
+import com.xrlj.infrastructure.Constants;
 import com.xrlj.utils.StringUtil;
 import com.xrlj.utils.authenticate.JwtUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,8 +29,8 @@ public class AccessTokenFilter extends BaseFilter {
 
     private static Logger logger = LoggerFactory.getLogger(AccessTokenFilter.class);
 
-    @Value("${jwt.sign.secret}")
-    private String jwtSecret;
+//    @Value("${jwt.sign.secret}")
+//    private String jwtSecret;
 
     @Autowired
     private RedisDao redisDao;
@@ -107,9 +108,9 @@ public class AccessTokenFilter extends BaseFilter {
         try {
             String authorization = request.getHeader(AUTHORIZATION_HEADER);
             String token = StringUtils.removeStart(authorization, "Bearer ");
-            String username = JwtUtils.getPubClaimValue(token, "username", String.class);
+            String username = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_USERNAME, String.class);
 
-            String redisJwt = (String) redisDao.get("my:jwt:".concat(username));
+            String redisJwt = (String) redisDao.get(Constants.JWT.JWT_REDIS_KEY.concat(username));
             if (StringUtil.isEmpty(redisJwt)) {
                 logger.warn("access token is empty");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
@@ -117,8 +118,10 @@ public class AccessTokenFilter extends BaseFilter {
                 return null;
             }
 
-            //校验token
-            JwtUtils.VerifyTokenResult verifyTokenResult = JwtUtils.verifyToken(jwtSecret, token);
+            //====校验token jwtSecret通过请求数据库获取
+            //redis透传，不通过网络，加快速度。
+            String appSecret = (String) redisDao.get(JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_CLIENT_ID, String.class));
+            JwtUtils.VerifyTokenResult verifyTokenResult = JwtUtils.verifyToken(Constants.JWT.JWT_ISSUER, appSecret, token);
             if (verifyTokenResult.equals(JwtUtils.VerifyTokenResult.VERIFY_OK)) { //成功
                 logger.info("access token ok");
                 return null;
