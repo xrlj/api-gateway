@@ -29,9 +29,6 @@ public class AccessTokenFilter extends BaseFilter {
 
     private static Logger logger = LoggerFactory.getLogger(AccessTokenFilter.class);
 
-//    @Value("${jwt.sign.secret}")
-//    private String jwtSecret;
-
     @Autowired
     private RedisDao redisDao;
 
@@ -120,7 +117,7 @@ public class AccessTokenFilter extends BaseFilter {
 
             //====校验token jwtSecret通过请求数据库获取
             //redis透传，不通过网络，加快速度。
-            String appSecret = (String) redisDao.get(JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_CLIENT_ID, String.class));
+            String appSecret = (String) redisDao.get("appId:" + JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_CLIENT_ID, String.class));
             JwtUtils.VerifyTokenResult verifyTokenResult = JwtUtils.verifyToken(Constants.JWT.JWT_ISSUER, appSecret, token);
             if (verifyTokenResult.equals(JwtUtils.VerifyTokenResult.VERIFY_OK)) { //成功
                 logger.info("access token ok");
