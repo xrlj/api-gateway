@@ -106,6 +106,7 @@ public class AccessTokenFilter extends BaseFilter {
             String authorization = request.getHeader(AUTHORIZATION_HEADER);
             String token = StringUtils.removeStart(authorization, "Bearer ");
             String username = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_USERNAME, String.class);
+            String clientid = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_CLIENT_ID, String.class);
 
             String redisJwt = (String) redisDao.get(Constants.JWT.JWT_REDIS_KEY.concat(username));
             if (StringUtil.isEmpty(redisJwt)) {
@@ -114,11 +115,17 @@ public class AccessTokenFilter extends BaseFilter {
                 forward(request, ctx.getResponse(), "/api/tokenMiss");
                 return null;
             }
+            if (!token.equals(redisJwt)) {
+                logger.info("access token invalid error");
+                ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
+                forward(request, ctx.getResponse(), "/api/errorToken");
+                return null;
+            }
 
             //====校验token jwtSecret通过请求数据库获取
             //redis透传，不通过网络，加快速度。
-            String appSecret = (String) redisDao.get("appId:" + JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_CLIENT_ID, String.class));
-            JwtUtils.VerifyTokenResult verifyTokenResult = JwtUtils.verifyToken(Constants.JWT.JWT_ISSUER, appSecret, token);
+            String appSecret = (String) redisDao.get("app:secret:".concat(clientid));
+            JwtUtils.VerifyTokenResult verifyTokenResult = JwtUtils.verifyToken(Constants.JWT.JWT_ISSUER, appSecret == null ? "" : appSecret, token);
             if (verifyTokenResult.equals(JwtUtils.VerifyTokenResult.VERIFY_OK)) { //成功
                 logger.info("access token ok");
                 return null;
