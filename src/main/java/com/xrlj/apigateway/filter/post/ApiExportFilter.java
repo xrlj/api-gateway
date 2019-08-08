@@ -98,7 +98,7 @@ public class ApiExportFilter extends ZuulFilter {
             //处理服务返回
             InputStream respData = context.getResponseDataStream();
             String respDataStr = (respData == null) ? "{}" : IOUtils.toString(respData,"utf-8");
-            log.debug(String.format(">>>>请求服务%s返回：%s",serviceName,respDataStr));
+            log.debug(">>>>>请求服务{}返回：{}", serviceName, respDataStr);
             ApiResult apiResult = new ApiResult();
             if (innerServiceError || serviceStatus != HttpStatus.OK.value()) { //服务异常返回
                 if (404 == serviceStatus) {
