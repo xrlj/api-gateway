@@ -2,7 +2,7 @@ spring:
   cloud:
       config: #配置中心
         name: api-gateway #在配置仓库的配置名称
-        profile: test,path #激活文件
+        profile: test,path,path-client #激活文件
         label: master
         fail-fast: true
         discovery:

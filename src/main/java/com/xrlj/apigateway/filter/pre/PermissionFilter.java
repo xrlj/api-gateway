@@ -56,10 +56,11 @@ public class PermissionFilter extends BaseFilter {
 
     @Override
     public Object run() {
-        RequestContext ctx = RequestContext.getCurrentContext();
-        HttpServletRequest request = ctx.getRequest();
         try {
-            System.out.println(">>>>>");
+            RequestContext ctx = RequestContext.getCurrentContext();
+            HttpServletRequest request = ctx.getRequest();
+            String urlStr = request.getRequestURL().toString();
+            logger.info("{} request to {}", request.getMethod(), urlStr);
         } catch (Exception e) {
             logger.error("token处理异常", e);
             ReflectionUtils.rethrowRuntimeException(e);
