@@ -106,7 +106,7 @@ public class  PermissionFilter extends BaseFilter {
             } else {
                 System.out.println(">>>>>>>>>>>>>>>>>aaaaaaaaaaaaaaa");
             }
-            String r = authClient.test("abcd");
+            String r = authClient.test("dddd");
             System.out.println(">>>>r" + r);
         } catch (Exception e) {
             logger.error("接口授权处理异常", e);
