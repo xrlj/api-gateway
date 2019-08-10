@@ -1,15 +1,22 @@
 package com.xrlj.apigateway.filter.pre;
 
 import com.netflix.zuul.context.RequestContext;
+import com.xrlj.apigateway.config.DirectPath;
+import com.xrlj.apigateway.feign.AuthClient;
 import com.xrlj.apigateway.filter.BaseFilter;
 import org.jooq.meta.derby.sys.Sys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 检查请求权限。
@@ -19,6 +26,12 @@ import javax.servlet.http.HttpServletRequest;
 public class PermissionFilter extends BaseFilter {
 
     private static Logger logger = LoggerFactory.getLogger(PermissionFilter.class);
+
+    @Autowired
+    private AuthClient authClient;
+
+    @Autowired
+    private DirectPath directPath;
 
     /**
      * 四种请求类型。
@@ -51,7 +64,24 @@ public class PermissionFilter extends BaseFilter {
      */
     @Override
     public boolean shouldFilter() {
-        return true;
+        try {
+            RequestContext ctx = RequestContext.getCurrentContext();
+            HttpServletRequest request = ctx.getRequest();
+
+            String urlStr = request.getRequestURL().toString();
+            logger.info("{} request to {}", request.getMethod(), urlStr);
+
+            URL url = new URL(urlStr);
+            String requestPath = url.getPath();
+            List<String> directPaths = directPath.getDirectPath();
+            if (directPaths.contains(requestPath)) { //直接放行
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            logger.error("授权过滤处理异常", e);
+            return false;
+        }
     }
 
     @Override
@@ -61,8 +91,20 @@ public class PermissionFilter extends BaseFilter {
             HttpServletRequest request = ctx.getRequest();
             String urlStr = request.getRequestURL().toString();
             logger.info("{} request to {}", request.getMethod(), urlStr);
+            List<String> permissions = new ArrayList<>();
+            permissions.add("system");
+            String[] p = new String[permissions.size()];
+            permissions.toArray(p);
+            boolean b = authClient.checkPermissions(p);
+            if (b) {
+                return null;
+            } else {
+                System.out.println(">>>>>>>>>>>>>>>>>aaaaaaaaaaaaaaa");
+            }
+            String r = authClient.test("abcd");
+            System.out.println(">>>>r" + r);
         } catch (Exception e) {
-            logger.error("token处理异常", e);
+            logger.error("接口授权处理异常", e);
             ReflectionUtils.rethrowRuntimeException(e);
         }
 

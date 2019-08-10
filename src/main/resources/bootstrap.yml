@@ -6,3 +6,4 @@ spring:
       enabled: true
   profiles:
     active: test
+

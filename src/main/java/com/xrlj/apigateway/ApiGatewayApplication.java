@@ -1,7 +1,6 @@
 package com.xrlj.apigateway;
 
 import com.xrlj.framework.base.BaseSpringbootApplication;
-import com.xrlj.framework.config.FeignConfiguration;
 import com.xrlj.framework.spring.mvc.api.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,7 +29,8 @@ import java.util.Locale;
  */
 @Slf4j
 @SpringBootApplication
-@ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {FeignConfiguration.class}),basePackages = {"com.xrlj.apigateway", "com.xrlj.framework"})
+//@ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {FeignConfiguration.class}),basePackages = {"com.xrlj.apigateway", "com.xrlj.framework"})
+@ComponentScan(basePackages = {"com.xrlj.apigateway", "com.xrlj.framework"})
 @EnableDiscoveryClient
 @EnableEurekaClient //可注册到服务中心
 @EnableFeignClients
