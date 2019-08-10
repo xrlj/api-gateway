@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Component
 @RefreshScope
-public class PermissionFilter extends BaseFilter {
+public class  PermissionFilter extends BaseFilter {
 
     private static Logger logger = LoggerFactory.getLogger(PermissionFilter.class);
 
@@ -66,18 +66,23 @@ public class PermissionFilter extends BaseFilter {
     public boolean shouldFilter() {
         try {
             RequestContext ctx = RequestContext.getCurrentContext();
-            HttpServletRequest request = ctx.getRequest();
 
-            String urlStr = request.getRequestURL().toString();
-            logger.info("{} request to {}", request.getMethod(), urlStr);
+            boolean sendZuulResponse = ctx.getBoolean("sendZuulResponse", true);  //有在AccessTokenFilter设置
 
-            URL url = new URL(urlStr);
-            String requestPath = url.getPath();
-            List<String> directPaths = directPath.getDirectPath();
-            if (directPaths.contains(requestPath)) { //直接放行
-                return false;
-            }
-            return true;
+            return sendZuulResponse;
+
+//            HttpServletRequest request = ctx.getRequest();
+//
+//            String urlStr = request.getRequestURL().toString();
+//            logger.info("{} request to {}", request.getMethod(), urlStr);
+//
+//            URL url = new URL(urlStr);
+//            String requestPath = url.getPath();
+//            List<String> directPaths = directPath.getDirectPath();
+//            if (directPaths.contains(requestPath)) { //直接放行
+//                return false;
+//            }
+//            return true;
         } catch (Exception e) {
             logger.error("授权过滤处理异常", e);
             return false;
