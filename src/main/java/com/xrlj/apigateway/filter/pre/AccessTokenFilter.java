@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
@@ -21,7 +20,7 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * 检查请求中是否有accessToken参数，没有不可访问。
+ * 检查认证token。
  */
 @Component
 @RefreshScope
@@ -34,8 +33,6 @@ public class AccessTokenFilter extends BaseFilter {
 
     @Autowired
     private DirectPath directPath;
-
-    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     /**
      * 四种请求类型。
@@ -103,8 +100,7 @@ public class AccessTokenFilter extends BaseFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         try {
-            String authorization = request.getHeader(AUTHORIZATION_HEADER);
-            String token = StringUtils.removeStart(authorization, "Bearer ");
+            String token = getToken(request);
             String username = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_USERNAME, String.class);
             String clientid = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_CLIENT_ID, String.class);
 

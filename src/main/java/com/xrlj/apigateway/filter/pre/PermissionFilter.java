@@ -4,6 +4,10 @@ import com.netflix.zuul.context.RequestContext;
 import com.xrlj.apigateway.config.DirectPath;
 import com.xrlj.apigateway.feign.AuthClient;
 import com.xrlj.apigateway.filter.BaseFilter;
+import com.xrlj.infrastructure.TokenUtils;
+import com.xrlj.utils.StringUtil;
+import com.xrlj.utils.authenticate.JwtUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.meta.derby.sys.Sys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 检查请求权限。
+ * 检查请求接口授权。
  */
 @Component
 @RefreshScope
@@ -66,23 +70,19 @@ public class  PermissionFilter extends BaseFilter {
     public boolean shouldFilter() {
         try {
             RequestContext ctx = RequestContext.getCurrentContext();
+            HttpServletRequest request = ctx.getRequest();
+
+            String urlStr = request.getRequestURL().toString();
+            logger.info("{} request to {}", request.getMethod(), urlStr);
+            URL url = new URL(urlStr);
+            String requestPath = url.getPath();
+            List<String> directPaths = directPath.getDirectPath();
+            if (directPaths.contains(requestPath)) { //直接放行
+                return false;
+            }
 
             boolean sendZuulResponse = ctx.getBoolean("sendZuulResponse", true);  //有在AccessTokenFilter设置
-
             return sendZuulResponse;
-
-//            HttpServletRequest request = ctx.getRequest();
-//
-//            String urlStr = request.getRequestURL().toString();
-//            logger.info("{} request to {}", request.getMethod(), urlStr);
-//
-//            URL url = new URL(urlStr);
-//            String requestPath = url.getPath();
-//            List<String> directPaths = directPath.getDirectPath();
-//            if (directPaths.contains(requestPath)) { //直接放行
-//                return false;
-//            }
-//            return true;
         } catch (Exception e) {
             logger.error("授权过滤处理异常", e);
             return false;
@@ -94,20 +94,25 @@ public class  PermissionFilter extends BaseFilter {
         try {
             RequestContext ctx = RequestContext.getCurrentContext();
             HttpServletRequest request = ctx.getRequest();
+
+            String token = getToken(request);
+
             String urlStr = request.getRequestURL().toString();
             logger.info("{} request to {}", request.getMethod(), urlStr);
+            URL url = new URL(urlStr);
+            String requestPath = url.getPath();
+            String permissionPath = requestPath.replace("/", "-");
             List<String> permissions = new ArrayList<>();
-            permissions.add("system");
-            String[] p = new String[permissions.size()];
-            permissions.toArray(p);
-            boolean b = authClient.checkPermissions(p);
-            if (b) {
+            permissions.add(StringUtil.removeStart(permissionPath, "-"));
+            String[] s = new String[permissions.size()];
+            permissions.toArray(s);
+            boolean b = authClient.checkPermissions(s);
+            if (!b) { //没拥有该接口权限
+                logger.error("用户{}对接口{}没有访问权限", TokenUtils.getUsername(token), requestPath);
+                ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
+                forward(request, ctx.getResponse(), "/api/permissionMiss");
                 return null;
-            } else {
-                System.out.println(">>>>>>>>>>>>>>>>>aaaaaaaaaaaaaaa");
             }
-            String r = authClient.test("dddd");
-            System.out.println(">>>>r" + r);
         } catch (Exception e) {
             logger.error("接口授权处理异常", e);
             ReflectionUtils.rethrowRuntimeException(e);

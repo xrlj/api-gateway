@@ -14,6 +14,7 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -95,6 +96,13 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
         public ApiResult tokenMissing(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
             apiResult.failure(412, "已退出登录，请重新获取token");
+            return apiResult;
+        }
+
+        @RequestMapping(value = "/permissionMiss", method = {RequestMethod.GET, RequestMethod.POST})
+        public ApiResult permissionMiss() {
+            ApiResult apiResult = new ApiResult();
+            apiResult.failure(HttpStatus.METHOD_NOT_ALLOWED.value(), "对接口无访问权限");
             return apiResult;
         }
     }
