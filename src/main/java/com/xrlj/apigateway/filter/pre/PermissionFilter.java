@@ -1,14 +1,13 @@
 package com.xrlj.apigateway.filter.pre;
 
 import com.netflix.zuul.context.RequestContext;
+import com.sun.org.apache.regexp.internal.RE;
 import com.xrlj.apigateway.config.DirectPath;
 import com.xrlj.apigateway.feign.AuthClient;
+import com.xrlj.apigateway.feign.RolePermissionsClient;
 import com.xrlj.apigateway.filter.BaseFilter;
 import com.xrlj.infrastructure.TokenUtils;
 import com.xrlj.utils.StringUtil;
-import com.xrlj.utils.authenticate.JwtUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.meta.derby.sys.Sys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.util.ReflectionUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,6 +31,9 @@ public class  PermissionFilter extends BaseFilter {
 
     @Autowired
     private AuthClient authClient;
+
+    @Autowired
+    private RolePermissionsClient rolePermissionsClient;
 
     @Autowired
     private DirectPath directPath;
@@ -106,7 +107,16 @@ public class  PermissionFilter extends BaseFilter {
             permissions.add(StringUtil.removeStart(permissionPath, "-"));
             String[] s = new String[permissions.size()];
             permissions.toArray(s);
-            boolean b = authClient.checkPermissions(s);
+            boolean b = true; //默认无需授权
+            //对外开放系统，所有api都需要授权才能访问
+            if (TokenUtils.getAppType(token) == 1) {
+                b = authClient.checkPermissions(s);
+            } else { //内部系统
+                boolean b1 = rolePermissionsClient.checkAuthorizeMethod(requestPath);
+                if (b1) { //该接口需要授权
+                    b = authClient.checkPermissions(s);
+                }
+            }
             if (!b) { //没拥有该接口权限
                 logger.error("用户{}对接口{}没有访问权限", TokenUtils.getUsername(token), requestPath);
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
