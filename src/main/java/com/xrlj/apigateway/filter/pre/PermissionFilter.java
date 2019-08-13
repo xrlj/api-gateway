@@ -102,9 +102,8 @@ public class  PermissionFilter extends BaseFilter {
             logger.info("{} request to {}", request.getMethod(), urlStr);
             URL url = new URL(urlStr);
             String requestPath = url.getPath();
-            String permissionPath = requestPath.replace("/", "-");
             List<String> permissions = new ArrayList<>();
-            permissions.add(StringUtil.removeStart(permissionPath, "-"));
+            permissions.add(requestPath);
             String[] s = new String[permissions.size()];
             permissions.toArray(s);
             boolean b = true; //默认无需授权

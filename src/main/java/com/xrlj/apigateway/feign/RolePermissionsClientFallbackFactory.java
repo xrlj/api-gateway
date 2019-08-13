@@ -11,6 +11,11 @@ public class RolePermissionsClientFallbackFactory implements FallbackFactory<Rol
     @Override
     public RolePermissionsClient create(Throwable throwable) {
         log.error("请求远程服务{}降级", RolePermissionsClient.class.getSimpleName());
-        return null;
+        return new RolePermissionsClient() {
+            @Override
+            public Boolean checkAuthorizeMethod(String urlPath) {
+                return false;
+            }
+        };
     }
 }
