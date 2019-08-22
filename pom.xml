@@ -119,7 +119,7 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.4.9</version>
+                <version>${dockerfile-maven-plugin.vesion}</version>
                 <configuration>
                     <repository>${docker.image.url}/${docker.image.prefix}/${project.artifactId}</repository>
                     <tag>${project.version}</tag>
