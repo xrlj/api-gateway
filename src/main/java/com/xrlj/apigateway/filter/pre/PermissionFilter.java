@@ -1,13 +1,11 @@
 package com.xrlj.apigateway.filter.pre;
 
 import com.netflix.zuul.context.RequestContext;
-import com.sun.org.apache.regexp.internal.RE;
 import com.xrlj.apigateway.config.DirectPath;
 import com.xrlj.apigateway.feign.AuthClient;
 import com.xrlj.apigateway.feign.RolePermissionsClient;
 import com.xrlj.apigateway.filter.BaseFilter;
 import com.xrlj.infrastructure.TokenUtils;
-import com.xrlj.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
