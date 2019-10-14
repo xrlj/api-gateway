@@ -37,39 +37,49 @@
         </encoder>
     </appender>
 
-    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>120.79.2.30:8088</destination>
-        <writeBufferSize>16384</writeBufferSize>
-        <!-- encoder is required -->
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <providers>
-                <timestamp>
-                    <timeZone>UTC</timeZone>
-                </timestamp>
-                <pattern>
+    <!--测试、生产环境-->
+    <springProfile name="test | prod">
+        <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>120.79.2.30:8088</destination>
+            <writeBufferSize>16384</writeBufferSize>
+            <!-- encoder is required -->
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp>
+                        <timeZone>UTC</timeZone>
+                    </timestamp>
                     <pattern>
-                        {
-                        "severity": "%level",
-                        "service": "${springAppName:-}",
-                        "trace": "%X{X-B3-TraceId:-}",
-                        "span": "%X{X-B3-SpanId:-}",
-                        "parent": "%X{X-B3-ParentSpanId:-}",
-                        "exportable": "%X{X-Span-Export:-}",
-                        "pid": "${PID:-}",
-                        "thread": "%thread",
-                        "class": "%logger{40}",
-                        "rest": "%message"
-                        }
+                        <pattern>
+                            {
+                            "severity": "%level",
+                            "service": "${springAppName:-}",
+                            "trace": "%X{X-B3-TraceId:-}",
+                            "span": "%X{X-B3-SpanId:-}",
+                            "parent": "%X{X-B3-ParentSpanId:-}",
+                            "exportable": "%X{X-Span-Export:-}",
+                            "pid": "${PID:-}",
+                            "thread": "%thread",
+                            "class": "%logger{40}",
+                            "rest": "%message"
+                            }
+                        </pattern>
                     </pattern>
-                </pattern>
-            </providers>
-        </encoder>
-    </appender>
+                </providers>
+            </encoder>
+        </appender>
+    </springProfile>
 
     <root level="INFO">
-        <appender-ref ref="console"/>
-        <!-- uncomment this to have also JSON logs -->
-        <appender-ref ref="logstash"/>
-        <appender-ref ref="flatfile"/>
+        <!--开发环境-->
+        <springProfile name="dev">
+            <appender-ref ref="console"/>
+            <appender-ref ref="flatfile"/>
+        </springProfile>
+
+        <!--测试、生产环境-->
+        <springProfile name="test | prod">
+            <appender-ref ref="flatfile"/>
+            <appender-ref ref="logstash"/>
+        </springProfile>
     </root>
 </configuration>

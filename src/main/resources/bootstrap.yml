@@ -1,9 +1,6 @@
 spring:
   application:
     name: api-gateway
-  mvc:
-    favicon:
-      enabled: true
   profiles:
-    active: test
+    active: dev
 

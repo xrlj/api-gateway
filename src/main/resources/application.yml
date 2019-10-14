@@ -10,6 +10,9 @@ spring:
       enabled: true
       trace:
         enabled: true
+  mvc:
+    favicon:
+      enabled: true
 management:
   endpoints:
     web:
