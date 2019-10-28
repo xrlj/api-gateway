@@ -43,7 +43,7 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ApiGatewayApplication.class, args);
-        log.info(">>>>>服务启动成功：{}", args);
+        log.info(">>>>>服务{}启动成功：{}", ApiGatewayApplication.class.getSimpleName(), args);
     }
 
     @RestController
