@@ -21,6 +21,7 @@ import java.util.Locale;
 
 /**
  * 请求无响应降级返回。请求超时或者服务没启动，将调用，降级返回结果。
+ *
  */
 @Component
 public class CustomFallbackProvider implements FallbackProvider {
@@ -62,6 +63,7 @@ public class CustomFallbackProvider implements FallbackProvider {
                 String str = JSONObject.toJSONString(apiResult);
                 return new ByteArrayInputStream(str.getBytes("UTF-8"));
             }
+
 
             @Override
             public HttpHeaders getHeaders() {

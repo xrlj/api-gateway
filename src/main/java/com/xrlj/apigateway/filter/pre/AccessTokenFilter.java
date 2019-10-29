@@ -1,13 +1,12 @@
 package com.xrlj.apigateway.filter.pre;
 
 import com.netflix.zuul.context.RequestContext;
+import com.xrlj.apigateway.common.Constants;
 import com.xrlj.apigateway.config.DirectPath;
 import com.xrlj.apigateway.filter.BaseFilter;
 import com.xrlj.framework.dao.RedisDao;
-import com.xrlj.infrastructure.Constants;
 import com.xrlj.utils.StringUtil;
 import com.xrlj.utils.authenticate.JwtUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +103,7 @@ public class AccessTokenFilter extends BaseFilter {
             String username = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_USERNAME, String.class);
             String clientid = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_CLIENT_ID, String.class);
 
-            String redisJwt = (String) redisDao.get(Constants.JWT.JWT_REDIS_KEY.concat(username));
+            String redisJwt = (String) redisDao.get(Constants.JWT.jwtRedisKey(username));
             if (StringUtil.isEmpty(redisJwt)) {
                 logger.warn("access token is empty");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
@@ -120,7 +119,7 @@ public class AccessTokenFilter extends BaseFilter {
 
             //====校验token jwtSecret通过请求数据库获取
             //redis透传，不通过网络，加快速度。
-            String appSecret = (String) redisDao.get("app:secret:".concat(clientid));
+            String appSecret = (String) redisDao.get(Constants.JWT.appSecretKey(clientid));//登录成功后保存
             JwtUtils.VerifyTokenResult verifyTokenResult = JwtUtils.verifyToken(Constants.JWT.JWT_ISSUER, appSecret == null ? "" : appSecret, token);
             if (verifyTokenResult.equals(JwtUtils.VerifyTokenResult.VERIFY_OK)) { //成功
                 logger.info("access token ok");
