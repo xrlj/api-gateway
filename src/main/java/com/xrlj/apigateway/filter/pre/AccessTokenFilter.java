@@ -98,7 +98,6 @@ public class AccessTokenFilter extends BaseFilter {
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
-        System.out.println(">>>auth apigate:" + request.getSession().getId());
         try {
             String token = getToken(request);
             String username = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_USERNAME, String.class);
