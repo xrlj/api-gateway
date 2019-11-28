@@ -20,9 +20,9 @@ management:
         include: "*"
 #debug: true #调试模式，将会看到更多的日志信息。默认关闭
 #zuul:
-#  add-host-header: true #重定向问题
+#  add-host-header: true #正确处理重定向问题
 #  sensitive-headers: "*" #保留所有头信息传递，解决多个服务在转发中sessionId不一致的问题，到了服务层，缺少头信息的问题。注意：每个具体的服务的sessionId还是不一样的?
 zuul:
   add-host-header: true #重定向问题
-  sensitive-headers: Access-Control-Allow-Origin #保留所有头信息传递，解决多个服务在转发中sessionId不一致的问题，到了服务层，缺少头信息的问题。注意：每个具体的服务的sessionId还是不一样的?
+  sensitive-headers: "*" #保留所有头信息传递，解决多个服务在转发中sessionId不一致的问题，到了服务层，缺少头信息的问题。注意：每个具体的服务的sessionId还是不一样的?
   ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
