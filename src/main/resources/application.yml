@@ -25,4 +25,4 @@ management:
 zuul:
   add-host-header: true #重定向问题
   sensitive-headers: #保留所有头信息传递，解决多个服务在转发中sessionId不一致的问题，到了服务层，缺少头信息的问题。注意：每个具体的服务的sessionId还是不一样的?
-  ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
+  ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken  # 忽略这些，解决跨域问题（这里的跨域配置和具体服务的跨域位置冲突的问题）
