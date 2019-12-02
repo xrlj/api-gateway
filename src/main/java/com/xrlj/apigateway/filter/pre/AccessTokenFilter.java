@@ -80,7 +80,7 @@ public class AccessTokenFilter extends BaseFilter {
             }
 
             if (authorization == null) {
-                logger.warn("access token is empty");
+                logger.info("access token is empty");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/nonToken");
                 return false;
@@ -103,19 +103,19 @@ public class AccessTokenFilter extends BaseFilter {
             String username = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_USERNAME, String.class);
             String clientid = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_CLIENT_ID, String.class);
 
-            String redisJwt = (String) redisDao.get(Constants.JWT.jwtRedisKey(username));
+            //判断token是否已经过期,不能这么判断
+            /*String redisJwt = (String) redisDao.get(Constants.JWT.jwtRedisKey(token));
             if (StringUtil.isEmpty(redisJwt)) {
                 logger.warn("access token is empty");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/tokenMiss");
                 return null;
-            }
-            if (!token.equals(redisJwt)) {
-                logger.info("access token invalid error");
+            }*/
+            /*if (!token.equals(redisJwt)) {                logger.info("access token invalid error");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/errorToken");
                 return null;
-            }
+            }*/
 
             //====校验token jwtSecret通过请求数据库获取
             //redis透传，不通过网络，加快速度。
