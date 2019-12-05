@@ -5,6 +5,7 @@ import com.xrlj.apigateway.common.Constants;
 import com.xrlj.apigateway.config.DirectPath;
 import com.xrlj.apigateway.filter.BaseFilter;
 import com.xrlj.framework.dao.RedisDao;
+import com.xrlj.infrastructure.IConstants;
 import com.xrlj.utils.StringUtil;
 import com.xrlj.utils.authenticate.JwtUtils;
 import org.slf4j.Logger;
@@ -103,15 +104,17 @@ public class AccessTokenFilter extends BaseFilter {
             String username = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_USERNAME, String.class);
             String clientid = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_CLIENT_ID, String.class);
 
-            //判断token是否已经过期,不能这么判断
-            /*String redisJwt = (String) redisDao.get(Constants.JWT.jwtRedisKey(token));
+            /*String jwtKey = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_KEY, String.class);
+            //判断token是否已经过期,不能这么判断.这样判断后，只能在一个浏览器登录，一个终端退出，则全退出。
+            String redisJwt = (String) redisDao.get(jwtKey);
             if (StringUtil.isEmpty(redisJwt)) {
                 logger.warn("access token is empty");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/tokenMiss");
                 return null;
-            }*/
-            /*if (!token.equals(redisJwt)) {                logger.info("access token invalid error");
+            }
+            if (!token.equals(redisJwt)) {
+                logger.info("access token invalid error");
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/errorToken");
                 return null;
