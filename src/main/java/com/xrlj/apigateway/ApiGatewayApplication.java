@@ -81,21 +81,21 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
         @RequestMapping(value = "/expToken", method = {RequestMethod.GET, RequestMethod.POST})
         public ApiResult expToken(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
-            apiResult.failure(410, "token已过期,请重新获取token");
+            apiResult.failure(410, "令牌已过期,请重新获取");
             return apiResult;
         }
 
         @RequestMapping(value = "/errorToken", method = {RequestMethod.GET, RequestMethod.POST})
         public ApiResult errorToken(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
-            apiResult.failure(411, "无效token,请重新获取token");
+            apiResult.failure(411, "无效令牌,请重新获取");
             return apiResult;
         }
 
         @RequestMapping(value = "/tokenMiss", method = {RequestMethod.GET, RequestMethod.POST})
         public ApiResult tokenMissing(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
-            apiResult.failure(412, "已退出登录，请重新获取token");
+            apiResult.failure(412, "已退出登录，请重新登录");
             return apiResult;
         }
 
