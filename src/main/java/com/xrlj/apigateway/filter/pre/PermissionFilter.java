@@ -57,7 +57,7 @@ public class  PermissionFilter extends BaseFilter {
      */
     @Override
     public int filterOrder() {
-        return 1;
+        return 2;
     }
 
     /**

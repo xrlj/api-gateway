@@ -105,5 +105,19 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
             apiResult.failure(HttpStatus.METHOD_NOT_ALLOWED.value(), "对接口无访问权限");
             return apiResult;
         }
+
+        @RequestMapping(value = "/checkClientId", method = {RequestMethod.GET, RequestMethod.POST})
+        public ApiResult checkClientId() {
+            ApiResult apiResult = new ApiResult();
+            apiResult.failure(6000, "缺少请求头Client-Id");
+            return apiResult;
+        }
+
+        @RequestMapping(value = "/checkClientDeviceType", method = {RequestMethod.GET, RequestMethod.POST})
+        public ApiResult checkClientDeviceType() {
+            ApiResult apiResult = new ApiResult();
+            apiResult.failure(6001, "缺少请求头Client-Device-Type");
+            return apiResult;
+        }
     }
 }

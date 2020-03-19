@@ -28,11 +28,15 @@ public class AccessTokenFilter extends BaseFilter {
 
     private static Logger logger = LoggerFactory.getLogger(AccessTokenFilter.class);
 
-    @Autowired
-    private RedisDao redisDao;
+    private final RedisDao redisDao;
+
+    private final DirectPath directPath;
 
     @Autowired
-    private DirectPath directPath;
+    public AccessTokenFilter(RedisDao redisDao, DirectPath directPath) {
+        this.redisDao = redisDao;
+        this.directPath = directPath;
+    }
 
     /**
      * 四种请求类型。
@@ -55,7 +59,7 @@ public class AccessTokenFilter extends BaseFilter {
      */
     @Override
     public int filterOrder() {
-        return 0;
+        return 1;
     }
 
     /**
@@ -76,7 +80,7 @@ public class AccessTokenFilter extends BaseFilter {
             String requestPath = url.getPath();
             String authorization = request.getHeader(AUTHORIZATION_HEADER);
             List<String> directPaths = directPath.getDirectPath();
-            if (authorization == null && directPaths.contains(requestPath)) { //直接放行
+            if (directPaths.contains(requestPath)) { //直接放行
                 return false;
             }
 
@@ -101,8 +105,6 @@ public class AccessTokenFilter extends BaseFilter {
         HttpServletRequest request = ctx.getRequest();
         try {
             String token = getToken(request);
-            String username = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_USERNAME, String.class);
-            String clientid = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_CLAIM_KEY_CLIENT_ID, String.class);
 
             /*String jwtKey = JwtUtils.getPubClaimValue(token, Constants.JWT.JWT_KEY, String.class);
             //判断token是否已经过期,不能这么判断.这样判断后，只能在一个浏览器登录，一个终端退出，则全退出。
@@ -122,7 +124,7 @@ public class AccessTokenFilter extends BaseFilter {
 
             //====校验token jwtSecret通过请求数据库获取
             //redis透传，不通过网络，加快速度。
-            String appSecret = (String) redisDao.get(Constants.JWT.appSecretKey(clientid));//登录成功后保存
+            String appSecret = (String) redisDao.get(Constants.JWT.appSecretKey(getClientId(request)));//登录成功后保存
             JwtUtils.VerifyTokenResult verifyTokenResult = JwtUtils.verifyToken(Constants.JWT.JWT_ISSUER, appSecret == null ? "" : appSecret, token);
             if (verifyTokenResult.equals(JwtUtils.VerifyTokenResult.VERIFY_OK)) { //成功
                 logger.info("access token ok");

@@ -1,6 +1,7 @@
 package com.xrlj.apigateway.filter;
 
 import com.netflix.zuul.ZuulFilter;
+import com.xrlj.utils.security.Base64Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,5 +31,23 @@ public abstract class BaseFilter extends ZuulFilter {
         String authorization = request.getHeader(AUTHORIZATION_HEADER);
         String token = StringUtils.removeStart(authorization, "Bearer ");
         return token;
+    }
+
+    protected String getLoginUsername(HttpServletRequest request) {
+        String authorization = request.getHeader(AUTHORIZATION_HEADER);
+        String loginInfoB4 = StringUtils.removeStart(authorization, "Basic ");
+        String loginInfo = Base64Utils.base64Decode(loginInfoB4);
+        String username = loginInfo.substring(0, loginInfo.indexOf(":"));
+        return username;
+    }
+
+    protected String getClientId(HttpServletRequest request) {
+        String clientId = request.getHeader("Client-Id");
+        return clientId;
+    }
+
+    protected String getClientDeviceType(HttpServletRequest request) {
+        String clientDeviceType = request.getHeader("Client-Device-Type");
+        return clientDeviceType;
     }
 }
