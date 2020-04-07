@@ -69,17 +69,17 @@
         </appender>
     </springProfile>
 
-    <root level="debug">
+    <root level="info">
         <!--开发环境-->
         <springProfile name="dev">
             <appender-ref ref="console"/>
-            <appender-ref ref="flatfile" level="info"/>
+            <appender-ref ref="flatfile"/>
         </springProfile>
 
         <!--测试、生产环境-->
         <springProfile name="test | prod">
-            <appender-ref ref="flatfile" level="info"/>
-            <appender-ref ref="logstash" level="info"/>
+            <appender-ref ref="flatfile"/>
+            <appender-ref ref="logstash"/>
         </springProfile>
     </root>
 </configuration>
