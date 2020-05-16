@@ -1,6 +1,7 @@
 package com.xrlj.apigateway.filter;
 
 import com.netflix.zuul.ZuulFilter;
+import com.netflix.zuul.context.RequestContext;
 import com.xrlj.utils.security.Base64Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,18 @@ import java.io.IOException;
 public abstract class BaseFilter extends ZuulFilter {
 
     protected static final String AUTHORIZATION_HEADER = "Authorization";
+
+    protected HttpServletRequest getRequest() {
+        RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletRequest request = ctx.getRequest();
+        return request;
+    }
+
+    protected HttpServletResponse getResponse() {
+        RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletResponse response = ctx.getResponse();
+        return response;
+    }
 
     protected void forward(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher(path);
