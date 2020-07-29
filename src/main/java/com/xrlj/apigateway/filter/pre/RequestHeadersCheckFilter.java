@@ -20,7 +20,7 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * 检查认证token。
+ * 检查请求头中是否带有Client-Id、Client-Device-Type
  */
 @Component
 @RefreshScope
