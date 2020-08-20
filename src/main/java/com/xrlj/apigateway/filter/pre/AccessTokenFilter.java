@@ -5,8 +5,6 @@ import com.xrlj.apigateway.common.Constants;
 import com.xrlj.apigateway.config.DirectPath;
 import com.xrlj.apigateway.filter.BaseFilter;
 import com.xrlj.framework.dao.RedisDao;
-import com.xrlj.infrastructure.IConstants;
-import com.xrlj.utils.StringUtil;
 import com.xrlj.utils.authenticate.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
