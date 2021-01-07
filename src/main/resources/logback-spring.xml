@@ -38,7 +38,7 @@
     </appender>
 
     <!--测试、生产环境-->
-    <springProfile name="test | prod">
+    <springProfile name="test | prod1">
         <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
             <destination>120.79.2.30:8088</destination>
             <writeBufferSize>16384</writeBufferSize>
@@ -78,8 +78,9 @@
 
         <!--测试、生产环境-->
         <springProfile name="test | prod">
+            <appender-ref ref="console"/>
             <appender-ref ref="flatfile"/>
-            <appender-ref ref="logstash"/>
+<!--            <appender-ref ref="logstash"/>-->
         </springProfile>
     </root>
 </configuration>
