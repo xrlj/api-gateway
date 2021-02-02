@@ -24,7 +24,7 @@ eureka:
   client:
 #    registry-fetch-interval-seconds: 5 #eureka client刷新本地缓存时间，默认30
     service-url:
-      defaultZone: http://192.168.0.48:1111/eureka/
+      defaultZone: http://192.168.0.49:1111/eureka/
 feign:
   hystrix:
     enabled: true  # 在feign中开启hystrix功能，默认情况下feign不开启hystrix功能
