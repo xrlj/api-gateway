@@ -53,7 +53,7 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
         @Autowired
         private MessageSource messageSource;
 
-        @RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.POST})
+        @RequestMapping(value = "/error")
         public ApiResult error(HttpServletResponse response) {
             int status = response.getStatus();
             ApiResult apiResult;
@@ -71,49 +71,49 @@ public class ApiGatewayApplication extends BaseSpringbootApplication {
          * @param response
          * @return
          */
-        @RequestMapping(value = "/nonToken", method = {RequestMethod.GET, RequestMethod.POST})
+        @RequestMapping(value = "/nonToken")
         public ApiResult nonToken(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
             apiResult.failure(401, "缺少api验证参数token");
             return apiResult;
         }
 
-        @RequestMapping(value = "/expToken", method = {RequestMethod.GET, RequestMethod.POST})
+        @RequestMapping(value = "/expToken")
         public ApiResult expToken(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
             apiResult.failure(410, "令牌已过期,请重新获取");
             return apiResult;
         }
 
-        @RequestMapping(value = "/errorToken", method = {RequestMethod.GET, RequestMethod.POST})
+        @RequestMapping(value = "/errorToken")
         public ApiResult errorToken(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
             apiResult.failure(411, "无效令牌,请重新获取");
             return apiResult;
         }
 
-        @RequestMapping(value = "/tokenMiss", method = {RequestMethod.GET, RequestMethod.POST})
+        @RequestMapping(value = "/tokenMiss")
         public ApiResult tokenMissing(HttpServletResponse response) {
             ApiResult apiResult = new ApiResult();
             apiResult.failure(412, "已退出登录，请重新登录");
             return apiResult;
         }
 
-        @RequestMapping(value = "/permissionMiss", method = {RequestMethod.GET, RequestMethod.POST})
+        @RequestMapping(value = "/permissionMiss")
         public ApiResult permissionMiss() {
             ApiResult apiResult = new ApiResult();
             apiResult.failure(HttpStatus.METHOD_NOT_ALLOWED.value(), "对接口无访问权限");
             return apiResult;
         }
 
-        @RequestMapping(value = "/checkClientId", method = {RequestMethod.GET, RequestMethod.POST})
+        @RequestMapping(value = "/checkClientId")
         public ApiResult checkClientId() {
             ApiResult apiResult = new ApiResult();
             apiResult.failure(6000, "缺少请求头Client-Id");
             return apiResult;
         }
 
-        @RequestMapping(value = "/checkClientDeviceType", method = {RequestMethod.GET, RequestMethod.POST})
+        @RequestMapping(value = "/checkClientDeviceType")
         public ApiResult checkClientDeviceType() {
             ApiResult apiResult = new ApiResult();
             apiResult.failure(6001, "缺少请求头Client-Device-Type");

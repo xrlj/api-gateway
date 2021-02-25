@@ -71,12 +71,10 @@ public class RequestHeadersCheckFilter extends BaseFilter {
             String clientId = request.getHeader("Client-Id");
             String clientDeviceType = request.getHeader("Client-Device-Type");
             if (StringUtil.isEmpty(clientId)) {
-//                throw APIs.error(6000, "缺少请求头Client-Id", null);
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/checkClientId");
             }
             if (StringUtil.isEmpty(clientDeviceType)) {
-//                throw APIs.error(6001, "缺少请求头Client-Device-Type", null);
                 ctx.setSendZuulResponse(false); //过滤该请求，不进行路由
                 forward(request, ctx.getResponse(), "/api/checkClientDeviceType");
             }
