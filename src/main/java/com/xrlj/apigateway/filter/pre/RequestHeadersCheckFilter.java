@@ -1,16 +1,11 @@
 package com.xrlj.apigateway.filter.pre;
 
 import com.netflix.zuul.context.RequestContext;
-import com.xrlj.apigateway.common.Constants;
 import com.xrlj.apigateway.config.DirectPath;
 import com.xrlj.apigateway.filter.BaseFilter;
-import com.xrlj.framework.dao.RedisDao;
-import com.xrlj.framework.spring.mvc.api.APIs;
 import com.xrlj.utils.StringUtil;
-import com.xrlj.utils.authenticate.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
@@ -27,6 +22,12 @@ import java.util.List;
 public class RequestHeadersCheckFilter extends BaseFilter {
 
     private static Logger logger = LoggerFactory.getLogger(RequestHeadersCheckFilter.class);
+
+    private final DirectPath directPath;
+
+    public RequestHeadersCheckFilter(DirectPath directPath) {
+        this.directPath = directPath;
+    }
 
     /**
      * 四种请求类型。
@@ -59,8 +60,24 @@ public class RequestHeadersCheckFilter extends BaseFilter {
      */
     @Override
     public boolean shouldFilter() {
-        return true;
+        try {
+            RequestContext ctx = RequestContext.getCurrentContext();
+            HttpServletRequest request = ctx.getRequest();
 
+            String urlStr = request.getRequestURL().toString();
+            logger.info("{} request to {}", request.getMethod(), urlStr);
+
+            URL url = new URL(urlStr);
+            String requestPath = url.getPath();
+            List<String> directPaths = directPath.getDirectPath();
+            if (directPaths.contains(requestPath)) { //直接放行
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            logger.error("过滤请求头信息处理错误", e);
+            return false;
+        }
     }
 
     @Override
