@@ -71,7 +71,7 @@
 
     <root level="info">
         <!--开发环境-->
-        <springProfile name="dev | local | prod-single-lxx">
+        <springProfile name="dev | local | prod-single-lxx | local-home">
             <appender-ref ref="console"/>
             <appender-ref ref="flatfile"/>
         </springProfile>
