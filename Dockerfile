@@ -1,5 +1,4 @@
-#FROM xinxiamu/alpine-java:11
-FROM lpicanco/java11-alpine:latest
+FROM xinxiamu/alpine-java:11
 VOLUME ["/tmp", "/logs"]
 ARG DEPENDENCY=target/dependency
 COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
